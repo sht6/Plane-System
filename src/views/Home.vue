@@ -1,4 +1,6 @@
 <script>
+import { login } from "../api/user";
+import { Message } from "element-ui";
 export default {
   name: "Home",
   data() {
@@ -26,11 +28,11 @@ export default {
       activeName: "1",
       ruleForm: {
         username: "",
-        pass: "",
+        password: "",
       },
       rules: {
         username: [{ validator: validatePass1, trigger: "blur" }],
-        pass: [{ validator: validatePass, trigger: "blur" }],
+        password: [{ validator: validatePass, trigger: "blur" }],
       },
     };
   },
@@ -38,7 +40,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          login(this.ruleForm).then((res) => {
+            if (res.code === "200") {
+              Message({
+                message: "登录成功",
+                type: "success",
+              });
+              this.$router.push({
+                path: "/main",
+              });
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
@@ -94,12 +106,12 @@ export default {
               style="margin-left: 30px; font-weight: bold"
               label-width="60px"
               label="密码:"
-              prop="pass"
+              prop="password"
             >
               <el-input
                 style="width: 230px"
                 type="password"
-                v-model="ruleForm.pass"
+                v-model="ruleForm.password"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
